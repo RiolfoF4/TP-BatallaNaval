@@ -6,16 +6,22 @@ interface
 uses
   crt;
 
-function ObtenerTecla(Tecla: Char): String;
-procedure MoverCursor;
+function ObtenerTecla: String;
+procedure Accion;
+procedure InterpretarTecla(Tecla: String);
+procedure MoverCursor(Dir: String);
 procedure Debug(x, y: Word);
 
 implementation
-function ObtenerTecla(Tecla: Char): String;
+function ObtenerTecla: String;
+  var
+    Tecla: Char;
   begin
+    Tecla := ReadKey;
     if Ord(Tecla) = 0 then
     begin
       Tecla := ReadKey;
+      if Tecla in [#72, #75, #77, #80] then
       case Tecla of
         #72: ObtenerTecla := 'Arr';
         #75: ObtenerTecla := 'Izq';
@@ -24,8 +30,25 @@ function ObtenerTecla(Tecla: Char): String;
       end;
     end
     else
-      if Tecla = 'r' then
-        ObtenerTecla := 'Rot';
+      case LowerCase(Tecla) of
+        'r': ObtenerTecla := 'Rot';
+        'z': ObtenerTecla := 'Col';
+      end;
+  end;
+
+procedure Accion;
+  begin
+    InterpretarTecla(ObtenerTecla);
+  end;
+
+procedure InterpretarTecla(Tecla: String);
+  begin
+    case Tecla of
+      'Arr': MoverCursor(Tecla);
+      'Izq': MoverCursor(Tecla);
+      'Der': MoverCursor(Tecla);
+      'Aba': MoverCursor(Tecla);
+    end;
   end;
 
 procedure Debug(x, y: Word);
@@ -38,19 +61,15 @@ procedure Debug(x, y: Word);
     Write('Posición y: ', y);
   end;
 
-procedure MoverCursor;
+procedure MoverCursor(Dir: String);
   var
-    Tecla: Char;
-    Mov: String[10];
     x, y: Word;
   begin
     x := WhereX;
     y := WhereY;
     TextColor(White);
     Debug(x, y);
-    Tecla := ReadKey;
-    Mov := ObtenerTecla(Tecla);
-    case Mov of
+    case Dir of
       'Arr': if y > 8 then Dec(y);
       'Izq': if x > 8 then Dec(x);
       'Der': if x < 18 then Inc(x);
