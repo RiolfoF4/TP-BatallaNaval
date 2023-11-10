@@ -1,4 +1,4 @@
-program BatallaNaval;
+program BatallaNaval_old;
 
 uses
   ManejoCursor, video, crt, mouse;
@@ -102,8 +102,3 @@ begin
   end;
   ReadLn;
 end.
-
-TODO:
-// Usar ObtenerTecla para leer las flechas, 'r' {rotar} y 'z' {colocar / ¿atacar?}
-// MoverCursor se tiene que llamar después de obtener la tecla
-// Moduladizar

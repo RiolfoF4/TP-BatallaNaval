@@ -2,6 +2,9 @@ unit UnitMenu;
 
 interface
 
+uses
+  LogicaJuego;
+
 procedure MostrarMenu;
 
 implementation
@@ -9,7 +12,8 @@ procedure MostrarMenu;
   var
     Op: String[2];
   begin
-    repeat
+    IniciarJuego;
+{    repeat
       WriteLn('[1] Iniciar Juego.');
       WriteLn('[2] Reglas.');
       WriteLn('[3] Salir.');
@@ -18,7 +22,7 @@ procedure MostrarMenu;
       case Op of
         '1': IniciarJuego;
       end;
-    until Op = '0';
+    until Op = '0';}
   end;
 
 end.

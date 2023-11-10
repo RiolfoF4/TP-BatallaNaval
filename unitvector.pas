@@ -11,19 +11,26 @@ type
   TDato = TDatoBarcos;                                              // CAMBIAR
   TVector = array[1..N] of TDato;
 
-procedure InicializarVector(var v: TVector);
-procedure CargarVector(var v: TVector);
-procedure MostrarVector(v: TVector);
+procedure InicializarVectorBarcos(var v: TVector);
+{procedure CargarVector(var v: TVector);
+procedure MostrarVector(v: TVector);}
 
 implementation
-  procedure InicializarVector(var v: TVector);
+  procedure InicializarVectorBarcos(var v: TVector);
   var
     i: Word;
   begin
-    for i := 1 to N do v[i] := 0;
+    for i := 1 to N do
+    begin
+      v[i].Nom := NombresBarcos[i];
+      v[i].Tam := TamBarcos[i];
+      v[i].Hits := 0;
+      v[i].Destruido := False;
+      v[i].Horient := 'V';
+    end;
   end;
 
-  procedure CargarVector(var v: TVector);
+{  procedure CargarVector(var v: TVector);
   var
     i: Word;
   begin
@@ -39,6 +46,6 @@ implementation
     i: Word;
   begin
     for i := 1 to N do WriteLn('Elemento ', i, ': ', v[i]);
-  end;
+  end;}
 end.
 
