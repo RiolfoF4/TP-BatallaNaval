@@ -25,7 +25,7 @@ procedure IniciarJuego;
     x := EsqX;
     y := EsqY;
 
-    for i := 1 to 20 do
+    for i := 1 to 50 do
     begin
       MostrarMatrizBarcos(MBarJugA);
       GotoXY(x, y);
@@ -76,14 +76,12 @@ function ObtenerTecla: String;
 
 procedure InterpretarTecla(Tecla: String);
   begin
-    if Tecla in ['Arr', 'Izq', 'Der', 'Aba'] then
-{      if MovValido(Tecla) then}
-        case Tecla of
-          'Arr': MoverCursor(Tecla);
-          'Izq': MoverCursor(Tecla);
-          'Der': MoverCursor(Tecla);
-          'Aba': MoverCursor(Tecla);
-        end;
+{   if MovValido(Tecla) then}
+    case Tecla of
+      'Arr': MoverCursor(Tecla);
+      'Izq': MoverCursor(Tecla);
+      'Der': MoverCursor(Tecla);
+      'Aba': MoverCursor(Tecla);
+    end;
   end;
-
 end.

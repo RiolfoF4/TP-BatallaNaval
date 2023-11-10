@@ -31,8 +31,8 @@ procedure MoverCursor(Dir: String);
     case Dir of
       'Arr': if y > 8 then Dec(y);
       'Izq': if x > 8 then Dec(x);
-      'Der': if x < 18 then Inc(x);
-      'Aba': if y < 18 then Inc(y);
+      'Der': if x < 17 then Inc(x);
+      'Aba': if y < 17 then Inc(y);
     end;
     GotoXY(x, y);
   end;
