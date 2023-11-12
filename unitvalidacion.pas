@@ -10,6 +10,7 @@ function RotValida(Barco: TDatoBarcos; Turno: Byte): Boolean;
 function ColValida(Barco: TDatoBarcos; MBar: TMatrizBarcos; Turno: Byte): Boolean;
 
 function MovValidoAtk(Accion: String; Turno: Byte): Boolean;
+function AtaqueValido(MAtk: TMatrizAtaques; Turno: Byte): Boolean;
 
 implementation
 function MovValidoBar(Accion: String; Barco: TDatoBarcos; Turno: Byte): Boolean;
@@ -110,4 +111,18 @@ function MovValidoAtk(Accion: String; Turno: Byte): Boolean;
         end;
     end;
 
+function AtaqueValido(MAtk: TMatrizAtaques; Turno: Byte): Boolean;
+  var
+    x, y: Word;
+    EsqX, EsqY: Word;
+  begin
+    ObtenerCoord(Turno, EsqX, EsqY);
+    EsqY := EsqY - DespConst;
+    x := WhereX - EsqX + 1;
+    y := WhereY - EsqY + 1;
+    if MAtk[y, x] <> Agua then
+      AtaqueValido := False
+    else
+      AtaqueValido := True;
+  end;
 end.

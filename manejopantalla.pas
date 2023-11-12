@@ -51,7 +51,6 @@ procedure MostrarMatrizAtaques(M: TMatrizAtaques; Turno: Byte);
       for j := 1 to Colnas do
       begin
         GotoXY(x, y);
-        TextColor(Red);
         if M[i,j] = Agua then
           TextColor(Cyan);
         Write(M[i, j]);

@@ -7,16 +7,16 @@ uses
 procedure IniciarJuego;
 procedure InicializarJuego(var MBarA: TMatrizBarcos; var MBarB: TMatrizBarcos; var MAtkA: TMatrizAtaques;
                            var MAtkB: TMatrizAtaques; var BarcosA: TVector; var BarcosB: TVector);
-
+{------ PRIMER TURNO ------}
 procedure PrimerTurno(var MBar: TMatrizBarcos; var Barcos: TVector; Turno: Byte);
 procedure AccionPrimerTurno(var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var Cod: Byte; Turno: Byte);
+procedure InterpretarAccionPrimerT(Accion: String; var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var Cod: Byte; Turno: Byte);
 procedure RotarBarco(var Barco: TDatoBarcos);
 procedure ColocarBarco(var Barco: TDatoBarcos; var MBar: TMatrizBarcos; Turno: Byte);
 
-{procedure AccionJuego;}
-
+procedure AccionJuego(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Turno: Byte);
+procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Cod: Byte; Turno: Byte);
 function ObtenerTecla: String;
-procedure InterpretarAccion(Accion: String; var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var Cod: Byte; Turno: Byte);
 
 implementation
 procedure IniciarJuego;
@@ -33,16 +33,15 @@ procedure IniciarJuego;
     PrimerTurno(MBarJugA, BarcosA, Turno);
     Turno := 2;
     PrimerTurno(MBarJugB, BarcosB, Turno);
-    Turno := 1;
-    MostrarMatrizAtaques(MAtkJugA, 1);
-    ObtenerCoord(Turno, x, y);
-    y := y - DespConst;
-    while True do
-    begin
-      Accion := ObtenerTecla;
-      if MovValidoAtk(Accion, Turno) then MoverCursor(Accion);
-    end;
-    ReadLn;
+    {while not JuegoTerminado do}
+    if Turno = 1 then
+      begin
+        Turno := 2;
+        AccionJuego(MBarJugA, MAtkJugB, BarcosA, Turno)
+      end
+    else
+      Turno := 1;
+      AccionJuego(MBarJugB, MAtkJugB, BarcosB, Turno);
   end;
 
 procedure InicializarJuego(var MBarA: TMatrizBarcos; var MBarB: TMatrizBarcos; var MAtkA: TMatrizAtaques;
@@ -83,7 +82,7 @@ procedure AccionPrimerTurno(var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var
     Tecla: String[4];
   begin
     Tecla := ObtenerTecla;
-    InterpretarAccion(Tecla, Barco, MBar, Cod, Turno);
+    InterpretarAccionPrimerT(Tecla, Barco, MBar, Cod, Turno);
   end;
 
 procedure RotarBarco(var Barco: TDatoBarcos);
@@ -136,19 +135,18 @@ function ObtenerTecla: String;
       end;
   end;
 
-procedure InterpretarAccion(Accion: String; var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var Cod: Byte; Turno: Byte);
+procedure InterpretarAccionPrimerT(Accion: String; var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var Cod: Byte; Turno: Byte);
+  {Códigos: 
+    1: Movimiento
+    2: Rotar
+    3: Colocar}
   begin
     if Accion[1] = 'M' then
     begin
       if MovValidoBar(Accion, Barco, Turno) then
       begin
         Cod := 1;
-        case Accion of
-          'MArr': MoverCursor(Accion);
-          'MIzq': MoverCursor(Accion);
-          'MDer': MoverCursor(Accion);
-          'MAba': MoverCursor(Accion);
-        end;
+        MoverCursor(Accion);
       end;
     end
     else
@@ -167,5 +165,39 @@ procedure InterpretarAccion(Accion: String; var Barco: TDatoBarcos; var MBar: TM
             ColocarBarco(Barco, MBar, Turno);
             Cod := 3;
           end;
+  end;
+
+procedure AccionJuego(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Turno: Byte);
+  var
+    Tecla: String[4];
+    x, y: Word;
+    EsqX, EsqY: Word;
+    Cod: Byte;
+  begin
+    Cod := 0;
+    ObtenerCoord(Turno, EsqX, EsqY);
+    GotoXY(EsqX, EsqY);
+    repeat
+      Tecla := ObtenerTecla;
+      InterpretarAccion(Tecla, MBar, MAtk, Barcos, Cod, Turno);
+    until Cod = 2;
+  end;
+
+procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Cod: Byte; Turno: Byte);
+  begin
+    if Accion[1] = 'M' then
+    begin
+      if MovValidoAtk(Accion, Turno) then
+      begin
+        Cod := 1;
+        MoverCursor(Accion);
+      end;
+    end
+    else
+      if Accion = 'Col' then
+        if AtaqueValido(MAtk, Turno) then
+        begin
+          
+        end;
   end;
 end.
