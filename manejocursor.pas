@@ -29,10 +29,10 @@ procedure MoverCursor(Dir: String);
     TextColor(White);
     Debug(x, y);
     case Dir of
-      'Arr': if y > 8 then Dec(y);
-      'Izq': if x > 8 then Dec(x);
-      'Der': if x < 17 then Inc(x);
-      'Aba': if y < 17 then Inc(y);
+      'MArr': Dec(y);
+      'MIzq': Dec(x);
+      'MDer': Inc(x);
+      'MAba': Inc(y);
     end;
     GotoXY(x, y);
   end;

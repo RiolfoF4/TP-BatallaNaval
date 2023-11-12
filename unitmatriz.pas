@@ -12,12 +12,24 @@ type
   TMatrizAtaques = array[1..Filas, 1..Colnas] of TDato;
 
 procedure InicializarMatrizBarcos(var M: TMatrizBarcos);
+procedure InicializarMatrizAtaques(var M: TMatrizAtaques);
 {procedure CargarMatriz(var M: TMatriz; Fil, Col: Word);
 procedure MostrarMatriz(M: TMatriz; Fil, Col: Word);}
 
 implementation
 
 procedure InicializarMatrizBarcos(var M: TMatrizBarcos);
+  var
+    i, j: Word;
+  begin
+    for i := 1 to Filas do
+      for j := 1 to Colnas do
+      begin
+        M[i,j] := Agua;
+      end;
+  end;
+
+procedure InicializarMatrizAtaques(var M: TMatrizAtaques);
   var
     i, j: Word;
   begin
