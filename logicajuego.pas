@@ -31,8 +31,9 @@ procedure IniciarJuego;
     InicializarJuego(MBarJugA, MBarJugB, MAtkJugA, MAtkJugB, BarcosA, BarcosB);
     Turno := 1;
     PrimerTurno(MBarJugA, BarcosA, Turno);
-{    Turno := 2;
-    PrimerTurno(MBarJugB, MAtkJugB, BarcosB, Turno);}
+    Turno := 2;
+    PrimerTurno(MBarJugB, BarcosB, Turno);
+    Turno := 1;
     MostrarMatrizAtaques(MAtkJugA, 1);
     ObtenerCoord(Turno, x, y);
     y := y - DespConst;
