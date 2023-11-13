@@ -27,7 +27,7 @@ procedure MoverCursor(Dir: String);
     x := WhereX;
     y := WhereY;
     TextColor(White);
-    Debug(x, y);
+    {Debug(x, y);}
     case Dir of
       'MArr': Dec(y);
       'MIzq': Dec(x);

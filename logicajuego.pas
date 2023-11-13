@@ -15,8 +15,11 @@ procedure RotarBarco(var Barco: TDatoBarcos);
 procedure ColocarBarco(var Barco: TDatoBarcos; var MBar: TMatrizBarcos; Turno: Byte);
 
 procedure AccionJuego(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Turno: Byte);
-procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Cod: Byte; Turno: Byte);
+procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; var Cod: Byte; Turno: Byte);
+procedure Atacar(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; var Cod: Byte; Turno: Byte);
+
 function ObtenerTecla: String;
+function NumBarco(Barco: Char): Byte;
 
 implementation
 procedure IniciarJuego;
@@ -28,20 +31,29 @@ procedure IniciarJuego;
     x, y: Word;
     Accion: String[4];
   begin
+    Cursoroff;
     InicializarJuego(MBarJugA, MBarJugB, MAtkJugA, MAtkJugB, BarcosA, BarcosB);
     Turno := 1;
     PrimerTurno(MBarJugA, BarcosA, Turno);
     Turno := 2;
     PrimerTurno(MBarJugB, BarcosB, Turno);
-    {while not JuegoTerminado do}
-    if Turno = 1 then
-      begin
-        Turno := 2;
-        AccionJuego(MBarJugA, MAtkJugB, BarcosA, Turno)
-      end
-    else
-      Turno := 1;
-      AccionJuego(MBarJugB, MAtkJugB, BarcosB, Turno);
+    while not(FinJuego(BarcosA)) and (not(FinJuego(BarcosB))) do
+    begin
+      if Turno = 1 then
+        begin
+          Turno := 2;
+          MostrarMatrizBarcos(MBarJugB, Turno);
+          AccionJuego(MBarJugA, MAtkJugB, BarcosA, Turno)
+        end
+      else
+        begin
+          Turno := 1;
+          MostrarMatrizBarcos(MBarJugA, Turno);
+          AccionJuego(MBarJugB, MAtkJugA, BarcosB, Turno);    
+        end;
+    end;
+    WriteLn('NO SE QUE CARAJOS PASA PERO ANDA');
+    ReadLn;
   end;
 
 procedure InicializarJuego(var MBarA: TMatrizBarcos; var MBarB: TMatrizBarcos; var MAtkA: TMatrizAtaques;
@@ -96,12 +108,9 @@ procedure RotarBarco(var Barco: TDatoBarcos);
 procedure ColocarBarco(var Barco: TDatoBarcos; var MBar: TMatrizBarcos; Turno: Byte);
   var
     x, y: Word;
-    EsqX, EsqY: Word;
     i: Byte;
   begin
-    ObtenerCoord(Turno, EsqX, EsqY);
-    x := WhereX - EsqX + 1;
-    y := WhereY - EsqY + 1;
+    ObtenerCoordMBar(Turno, x, y);
     for i := 1 to Barco.Tam do
     begin
       MBar[y, x] := Barco.Nom[1];
@@ -132,6 +141,8 @@ function ObtenerTecla: String;
       case LowerCase(Tecla) of
         'r': ObtenerTecla := 'Rot';
         'z': ObtenerTecla := 'Col';
+      else
+        ObtenerTecla := '';
       end;
   end;
 
@@ -141,6 +152,7 @@ procedure InterpretarAccionPrimerT(Accion: String; var Barco: TDatoBarcos; var M
     2: Rotar
     3: Colocar}
   begin
+    Cod := 0;
     if Accion[1] = 'M' then
     begin
       if MovValidoBar(Accion, Barco, Turno) then
@@ -174,17 +186,60 @@ procedure AccionJuego(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Bar
     EsqX, EsqY: Word;
     Cod: Byte;
   begin
-    Cod := 0;
-    ObtenerCoord(Turno, EsqX, EsqY);
-    GotoXY(EsqX, EsqY);
+    ObtenerCoordAtk(Turno, x, y);
     repeat
+      MostrarMatrizAtaques(MAtk, Turno);
+      GotoXY(x, y);
+      Write('*');
+      GotoXY(x, y);
       Tecla := ObtenerTecla;
       InterpretarAccion(Tecla, MBar, MAtk, Barcos, Cod, Turno);
-    until Cod = 2;
+      x := WhereX;
+      y := WhereY;
+    until (Cod = 3) or (FinJuego(Barcos));
   end;
 
-procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Cod: Byte; Turno: Byte);
+procedure Atacar(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; var Cod: Byte; Turno: Byte);
+  var
+    x, y: Word;
+    Num: Byte;
   begin
+    ObtenerCoordMAtk(Turno, x, y);
+    if MBar[y, x] <> Agua then
+      begin
+      Num := NumBarco(MBar[y, x]);
+      Inc(Barcos[Num].Hits);
+      if Barcos[Num].Hits = Barcos[Num].Tam then
+        Barcos[Num].Destruido := True;
+      MAtk[y, x] := 'X';
+      MBar[y, x] := 'X';
+      Cod := 2;
+      end
+    else
+      begin
+        MAtk[y, x] := '#';
+        MBar[y, x] := '#';
+        Cod := 3;
+      end;
+  end;
+
+function NumBarco(Barco: Char): Byte;
+  begin
+    case Barco of
+      'P': NumBarco := 1;
+      'A': NumBarco := 2;
+      'C': NumBarco := 3;
+      'S': NumBarco := 4;
+      'D': NumBarco := 5;
+    end;
+  end;
+procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; var Cod: Byte; Turno: Byte);
+  {Códigos:
+  0: Movimiento
+  1: Hit
+  2: Fallo}
+  begin
+    Cod := 0;
     if Accion[1] = 'M' then
     begin
       if MovValidoAtk(Accion, Turno) then
@@ -196,8 +251,6 @@ procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: T
     else
       if Accion = 'Col' then
         if AtaqueValido(MAtk, Turno) then
-        begin
-          
-        end;
+          Atacar(MBar, MAtk, Barcos, Cod, Turno);
   end;
 end.

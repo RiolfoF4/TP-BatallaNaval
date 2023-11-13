@@ -9,6 +9,9 @@ procedure MostrarMatrizBarcos(M: TMatrizBarcos; Turno: Byte);
 procedure MostrarMatrizAtaques(M: TMatrizAtaques; Turno: Byte);
 procedure MostrarBarco(B: TDatoBarcos);
 procedure ObtenerCoord(Turno: Byte; var x: Word; var y: Word);
+procedure ObtenerCoordMBar(Turno: Byte; var x: Word; var y: Word);
+procedure ObtenerCoordAtk(Turno: Byte; var x: Word; var y: Word);
+procedure ObtenerCoordMAtk(Turno: Byte; var x: Word; var y: Word);
 
 implementation
 procedure MostrarMatrizBarcos(M: TMatrizBarcos; Turno: Byte);
@@ -41,16 +44,16 @@ procedure MostrarMatrizAtaques(M: TMatrizAtaques; Turno: Byte);
   var
     i, j: Word;
     x, y: Word;
-    EsqX, EsqY: Word;
+    EsqX: Word;
   begin
-   ObtenerCoord(Turno, EsqX, EsqY);
-   x := EsqX;
-   y := EsqY - DespConst;
+   ObtenerCoordAtk(Turno, x, y);
+   EsqX := x;
     for i := 1 to Filas do
     begin
       for j := 1 to Colnas do
       begin
         GotoXY(x, y);
+        TextColor(White);
         if M[i,j] = Agua then
           TextColor(Cyan);
         Write(M[i, j]);
@@ -94,8 +97,34 @@ procedure ObtenerCoord(Turno: Byte; var x: Word; var y: Word);
     else
     begin
       x := EsqXB;
-      y := EsqYB;      
+      y := EsqYB;
     end;
   end;
 
+procedure ObtenerCoordMBar(Turno: Byte; var x: Word; var y: Word);
+  var
+    EsqX, EsqY: Word;
+  begin
+    ObtenerCoord(Turno, EsqX, EsqY);
+    x := WhereX - EsqX + 1;
+    y := WhereY - EsqY + 1;
+  end;
+
+procedure ObtenerCoordAtk(Turno: Byte; var x: Word; var y: Word);
+  var
+    EsqX, EsqY: Word;
+  begin
+    ObtenerCoord(Turno, EsqX, EsqY);
+    x := EsqX;
+    y := EsqY - DespConst;
+  end;
+
+procedure ObtenerCoordMAtk(Turno: Byte; var x: Word; var y: Word);
+  var
+    EsqX, EsqY: Word;
+  begin
+    ObtenerCoordAtk(Turno, EsqX, EsqY);
+    x := WhereX - EsqX + 1;
+    y := WhereY - EsqY + 1;
+  end;
 end.

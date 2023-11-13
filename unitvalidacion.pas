@@ -3,7 +3,7 @@ unit UnitValidacion;
 interface
 
 uses
-  crt, UnitType, UnitMatriz, ManejoPantalla;
+  crt, UnitType, UnitMatriz, UnitVector, ManejoPantalla;
 
 function MovValidoBar(Accion: String; Barco: TDatoBarcos; Turno: Byte): Boolean;
 function RotValida(Barco: TDatoBarcos; Turno: Byte): Boolean;
@@ -11,6 +11,7 @@ function ColValida(Barco: TDatoBarcos; MBar: TMatrizBarcos; Turno: Byte): Boolea
 
 function MovValidoAtk(Accion: String; Turno: Byte): Boolean;
 function AtaqueValido(MAtk: TMatrizAtaques; Turno: Byte): Boolean;
+function FinJuego(Barcos: TVector): Boolean;
 
 implementation
 function MovValidoBar(Accion: String; Barco: TDatoBarcos; Turno: Byte): Boolean;
@@ -22,8 +23,6 @@ function MovValidoBar(Accion: String; Barco: TDatoBarcos; Turno: Byte): Boolean;
     x := WhereX;
     y := WhereY;
     ObtenerCoord(Turno, EsqX, EsqY);
-    GotoXY(1,1);
-    Write(y + Barco.Tam, ' ', Barco.Horient);
     GotoXY(x, y);
     Case Accion of
       'MArr': if y > EsqY then MovValidoBar := True;
@@ -114,15 +113,25 @@ function MovValidoAtk(Accion: String; Turno: Byte): Boolean;
 function AtaqueValido(MAtk: TMatrizAtaques; Turno: Byte): Boolean;
   var
     x, y: Word;
-    EsqX, EsqY: Word;
   begin
-    ObtenerCoord(Turno, EsqX, EsqY);
-    EsqY := EsqY - DespConst;
-    x := WhereX - EsqX + 1;
-    y := WhereY - EsqY + 1;
+    ObtenerCoordMAtk(Turno, x, y);
     if MAtk[y, x] <> Agua then
       AtaqueValido := False
     else
       AtaqueValido := True;
+  end;
+
+function FinJuego(Barcos: TVector): Boolean;
+  var
+    i: Byte;
+  begin
+    i := 1;
+    FinJuego := True;
+    while (i <= 5) and FinJuego do
+    begin
+      if not(Barcos[i].Destruido) then
+        FinJuego := False;
+      Inc(i);
+    end;
   end;
 end.
