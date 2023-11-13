@@ -7,6 +7,7 @@ const
     ('Portaviones', 'Acorazado', 'Crucero', 'Submarino', 'Destruct'+'or');
   TamBarcos: array [1..5] of Byte = (5, 4, 3, 3, 2);
   Agua = '~';
+  
   EsqXA = 8;
   EsqYA = 18;
 
@@ -14,7 +15,6 @@ const
   EsqYB = 18;
 
   DespConst = 13;
-
 
 type
   TDatoBarcos = record

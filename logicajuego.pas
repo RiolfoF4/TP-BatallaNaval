@@ -7,12 +7,14 @@ uses
 procedure IniciarJuego;
 procedure InicializarJuego(var MBarA: TMatrizBarcos; var MBarB: TMatrizBarcos; var MAtkA: TMatrizAtaques;
                            var MAtkB: TMatrizAtaques; var BarcosA: TVector; var BarcosB: TVector);
+
 {------ PRIMER TURNO ------}
 procedure PrimerTurno(var MBar: TMatrizBarcos; var Barcos: TVector; Turno: Byte);
 procedure AccionPrimerTurno(var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var Cod: Byte; Turno: Byte);
 procedure InterpretarAccionPrimerT(Accion: String; var Barco: TDatoBarcos; var MBar: TMatrizBarcos; var Cod: Byte; Turno: Byte);
 procedure RotarBarco(var Barco: TDatoBarcos);
 procedure ColocarBarco(var Barco: TDatoBarcos; var MBar: TMatrizBarcos; Turno: Byte);
+{--------------------------}
 
 procedure AccionJuego(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; Turno: Byte);
 procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; var Cod: Byte; Turno: Byte);
@@ -28,8 +30,6 @@ procedure IniciarJuego;
     MAtkJugA, MAtkJugB: TMatrizAtaques;
     BarcosA, BarcosB: TVector;
     Turno: Byte;
-    x, y: Word;
-    Accion: String[4];
   begin
     Cursoroff;
     InicializarJuego(MBarJugA, MBarJugB, MAtkJugA, MAtkJugB, BarcosA, BarcosB);
@@ -183,7 +183,6 @@ procedure AccionJuego(var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Bar
   var
     Tecla: String[4];
     x, y: Word;
-    EsqX, EsqY: Word;
     Cod: Byte;
   begin
     ObtenerCoordAtk(Turno, x, y);
@@ -236,8 +235,8 @@ function NumBarco(Barco: Char): Byte;
 procedure InterpretarAccion(Accion: String; var MBar: TMatrizBarcos; var MAtk: TMatrizAtaques; var Barcos: TVector; var Cod: Byte; Turno: Byte);
   {Códigos:
   0: Movimiento
-  1: Hit
-  2: Fallo}
+  2: Hit
+  3: Fallo}
   begin
     Cod := 0;
     if Accion[1] = 'M' then
