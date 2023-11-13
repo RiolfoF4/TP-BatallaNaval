@@ -52,7 +52,7 @@ procedure IniciarJuego;
           AccionJuego(MBarJugB, MAtkJugA, BarcosB, Turno);    
         end;
     end;
-    WriteLn('NO SE QUE CARAJOS PASA PERO ANDA');
+    WriteLn('ANDA');
     ReadLn;
   end;
 
